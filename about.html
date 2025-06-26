@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Aset Baru - SIBISET</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #f4f7ff, #ffffff);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #007bff;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #555;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #007bff;
+    }
+
+    .form-section {
+      max-width: 600px;
+      margin: 3rem auto;
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-section h1 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    form input,
+    form select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1rem;
+      transition: border 0.3s ease;
+    }
+
+    form input:focus,
+    form select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .btn {
+      margin-top: 2rem;
+      width: 100%;
+      background: linear-gradient(to right, #007bff, #00c9a7);
+      color: white;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 123, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        margin-top: 1rem;
+      }
+
+      nav a {
+        margin-left: 0;
+        margin-right: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="navbar">
+      <div class="logo">SIBISET</div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html" class="active">Data Aset Baru</a>
+        <a href="faqs.html">Laporan Aset</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="form-section">
+    <h1>Input Data Aset Baru</h1>
+    <form action="#" method="post" class="asset-form">
+      <label for="kode">Kode Aset:</label>
+      <input type="text" id="kode" name="kode" required />
+
+      <label for="nama">Nama Aset:</label>
+      <input type="text" id="nama" name="nama" required />
+
+      <label for="lokasi">Lokasi:</label>
+      <input type="text" id="lokasi" name="lokasi" required />
+
+      <label for="tahun">Tahun Perolehan:</label>
+      <input type="number" id="tahun" name="tahun" required />
+
+      <label for="kondisi">Kondisi:</label>
+      <select id="kondisi" name="kondisi" required>
+        <option value="">-- Pilih Kondisi --</option>
+        <option value="Baik">Baik</option>
+        <option value="Rusak Ringan">Rusak Ringan</option>
+        <option value="Rusak Berat">Rusak Berat</option>
+      </select>
+
+      <label for="harga">Harga Aset (Rp):</label>
+      <input type="text" id="harga" name="harga" required oninput="formatHarga(this)" placeholder="Masukkan harga" />
+
+      <button type="submit" class="btn">Simpan Data</button>
+    </form>
+  </section>
+
+  <script>
+    // Simpan data aset ke localStorage menggunakan key: 'asetList'
+    document.querySelector(".asset-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const kode = document.getElementById("kode").value;
+      const nama = document.getElementById("nama").value;
+      const lokasi = document.getElementById("lokasi").value;
+      const tahun = document.getElementById("tahun").value;
+      const kondisi = document.getElementById("kondisi").value;
+      let harga = document.getElementById("harga").value;
+      harga = harga.replace(/[^\d]/g, ""); // Hilangkan titik, koma, dan karakter non-digit
+
+      const waktu = new Date().toLocaleDateString("id-ID") + ", " + new Date().toLocaleTimeString("id-ID");
+
+      const newData = { kode, nama, lokasi, tahun, kondisi, harga, waktu };
+
+      const asetList = JSON.parse(localStorage.getItem("asetList")) || [];
+      asetList.push(newData);
+      localStorage.setItem("asetList", JSON.stringify(asetList));
+
+      this.reset();
+      alert("Data aset berhasil disimpan!");
+    });
+
+    // Format harga saat diketik
+    function formatHarga(input) {
+      let value = input.value.replace(/[^\d]/g, "");
+      input.value = new Intl.NumberFormat("id-ID").format(value);
+    }
+  </script>
+
+</body>
+</html>
