@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - SIBISET</title>
+
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #f4f7fc;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 80px; /* Tambahkan ruang agar konten tidak tertutup header */
+    }
+
+    header {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: fixed; /* Navbar tetap di atas */
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #007bff;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      color: #555;
+      transition: color 0.2s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #007bff;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 90%;
+      margin: 2rem auto;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -30%;
+      width: 160%;
+      height: 160%;
+      background: linear-gradient(135deg, rgba(0,123,255,0.2), rgba(0,201,167,0.2));
+      transform: rotate(45deg);
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .icon {
+      font-size: 2rem;
+      color: #007bff;
+      margin-bottom: 0.5rem;
+    }
+
+    .number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #333;
+      animation: pulse 2s infinite;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .chart-container {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+
+    .chart-header {
+      margin-bottom: 1rem;
+    }
+
+    .chart-header h2 {
+      font-size: 1.25rem;
+      color: #333;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        flex-direction: column;
+      }
+      nav {
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="navbar">
+      <div class="logo">SIBISET</div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="about.html">Data Aset Baru</a>
+        <a href="faqs.html">Laporan Aset</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Kartu Statistik -->
+    <section class="dashboard">
+      <div class="card">
+        <div class="card-content">
+          <i class="fas fa-database icon"></i>
+          <div class="number" id="totalAset">0</div>
+          <p>Total Aset Terdaftar</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <i class="fas fa-map-marker-alt icon"></i>
+          <div class="number" id="jumlahKecamatan">0</div>
+          <p>Kecamatan Terlibat</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <i class="fas fa-calendar-alt icon"></i>
+          <div class="number" id="tahunIni">0</div>
+          <p>Aset Tahun Ini</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <i class="fas fa-file-alt icon"></i>
+          <div class="number" id="jumlahLaporan">0</div>
+          <p>Laporan Masuk</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grafik Pelanggan -->
+    <section class="chart-container">
+      <div class="chart-header">
+        <h2>Jumlah Pelanggan per Kecamatan</h2>
+      </div>
+      <canvas id="customerChart"></canvas>
+    </section>
+  </main>
+
+  <script>
+    let chartInstance;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const data = JSON.parse(localStorage.getItem("asetList")) || [];
+
+      // Statistik
+      document.getElementById("totalAset").textContent = data.length;
+      document.getElementById("jumlahKecamatan").textContent = [...new Set(data.map(item => item.lokasi.toLowerCase()))].length;
+      const tahunSekarang = new Date().getFullYear();
+      document.getElementById("tahunIni").textContent = data.filter(item => Number(item.tahun) === tahunSekarang).length;
+      document.getElementById("jumlahLaporan").textContent = data.length;
+
+      renderChart(data);
+    });
+
+    function renderChart(data) {
+      const ctx = document.getElementById("customerChart").getContext("2d");
+
+      const kecamatanList = [
+        "songgom", "larangan", "bumiayu", "ketanggungan",
+        "wanasari", "paguyangan", "tonjong", "brebes"
+      ];
+
+      const pelangganCounts = kecamatanList.map(kec =>
+        data.filter(item => item.lokasi.toLowerCase().includes(kec)).length
+      );
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: kecamatanList.map(k => k.charAt(0).toUpperCase() + k.slice(1)),
+          datasets: [{
+            label: "Jumlah Aset",
+            data: pelangganCounts,
+            backgroundColor: "rgba(0,123,255,0.6)",
+            borderColor: "rgba(0,123,255,1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: 10,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

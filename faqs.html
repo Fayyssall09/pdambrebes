@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laporan Aset - SIBISET</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f9fbff;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 1rem;
+    }
+
+    header {
+      background: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #007bff;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #555;
+      font-weight: 600;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #007bff;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 2rem 0 1rem;
+      color: #003f5c;
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.5rem;
+      border-radius: 30px;
+      border: 2px solid #0077b6;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-box .icon {
+      position: absolute;
+      top: 50%;
+      left: 1rem;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #0077b6;
+    }
+
+    .print-menu {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-cetak {
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      min-width: 800px;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #0084ff;
+      color: white;
+    }
+
+    .btn-edit, .btn-hapus {
+      padding: 6px 12px;
+      margin-right: 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .btn-edit { background-color: #ffc107; color: #333; }
+    .btn-hapus { background-color: #dc3545; color: white; }
+
+    @media (max-width: 768px) {
+      nav {
+        margin-top: 1rem;
+        text-align: center;
+        width: 100%;
+      }
+      nav a {
+        display: inline-block;
+        margin: 0.5rem 1rem;
+      }
+    }
+
+    /* PENAMBAHAN UNTUK CETAK */
+    @media print {
+      header,
+      .search-box,
+      .print-menu,
+      .btn-edit,
+      .btn-hapus,
+      td:last-child,
+      th:last-child {
+        display: none !important;
+      }
+
+      .table-wrapper {
+        overflow: visible !important;
+      }
+
+      table {
+        width: 100%;
+        font-size: 12px;
+      }
+
+      body {
+        background-color: white !important;
+      }
+
+      * {
+        color: black !important;
+      }
+
+      @page {
+        size: landscape;
+        margin: 1cm;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <div class="navbar">
+        <div class="logo">SIBISET</div>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="about.html">Data Aset Baru</a>
+          <a href="faqs.html" class="active">Laporan Aset</a>
+          <a href="contact.html">Contact Us</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Laporan Data Aset</h1>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Cari berdasarkan kode, nama, lokasi..." onkeyup="cariData()">
+      <span class="icon">🔍</span>
+    </div>
+
+    <div class="print-menu">
+      <button class="btn-cetak" onclick="window.print()">Cetak Data</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="dataTabel">
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Nama</th>
+            <th>Lokasi</th>
+            <th>Tahun</th>
+            <th>Kondisi</th>
+            <th>Waktu</th>
+            <th>Harga</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="dataBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    function cariData() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#dataTabel tbody tr");
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+      });
+    }
+
+    function editData(index) {
+      const data = JSON.parse(localStorage.getItem("asetList")) || [];
+      const item = data[index];
+      const nama = prompt("Edit Nama:", item.nama);
+      const lokasi = prompt("Edit Lokasi:", item.lokasi);
+      const tahun = prompt("Edit Tahun:", item.tahun);
+      const kondisi = prompt("Edit Kondisi:", item.kondisi);
+      const harga = prompt("Edit Harga:", item.harga);
+
+      if (nama && lokasi && tahun && kondisi && harga) {
+        item.nama = nama;
+        item.lokasi = lokasi;
+        item.tahun = tahun;
+        item.kondisi = kondisi;
+        item.harga = harga;
+        item.waktu = new Date().toLocaleDateString("id-ID") + ", " + new Date().toLocaleTimeString("id-ID");
+        data[index] = item;
+        localStorage.setItem("asetList", JSON.stringify(data));
+        location.reload();
+      }
+    }
+
+    function hapusData(index) {
+      if (confirm("Yakin ingin menghapus data ini?")) {
+        const data = JSON.parse(localStorage.getItem("asetList")) || [];
+        data.splice(index, 1);
+        localStorage.setItem("asetList", JSON.stringify(data));
+        location.reload();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const data = JSON.parse(localStorage.getItem("asetList")) || [];
+      const body = document.getElementById("dataBody");
+      data.forEach((item, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.kode}</td>
+          <td>${item.nama}</td>
+          <td>${item.lokasi}</td>
+          <td>${item.tahun}</td>
+          <td>${item.kondisi}</td>
+          <td>${item.waktu}</td>
+          <td>Rp ${new Intl.NumberFormat("id-ID").format(item.harga)}</td>
+          <td>
+            <button class="btn-edit" onclick="editData(${i})">Edit</button>
+            <button class="btn-hapus" onclick="hapusData(${i})">Hapus</button>
+          </td>
+        `;
+        body.appendChild(row);
+      });
+    });
+  </script>
+
+</body>
+</html>
